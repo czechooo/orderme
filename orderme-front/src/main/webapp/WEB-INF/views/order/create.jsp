@@ -22,7 +22,11 @@
             </div>
 
             <div class="row">
-                <div class="col-lg-offset-9 col-lg-3">
+                <div class="col-lg-offset-6 col-lg-3">
+                    <div ng-bind="orderSent" class="pull-right create-order__message"></div>
+                </div>
+                <div class="col-lg-3">
+                    
                     <a class="btn btn-primary pull-right create-order__create-button" ng-click="createOrder()">Create</a>
                 </div>
             </div>

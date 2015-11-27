@@ -21,8 +21,7 @@ orderApp.controller('CreateOrderController', ['$scope', '$http',"$interval", 'gr
                 data: dataToSend
             }).then(function successCallback(response) {
                 console.log(response);
-                console.log('olala2');
-                console.log(growl);
+                $scope.orderSent = "Order Created";
                 $scope.order = {};
                 growl.success("Order has been placed", config);
 
