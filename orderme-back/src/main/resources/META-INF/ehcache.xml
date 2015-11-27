@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    name="secondLevelCacheManager"
+    xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
+
+    <defaultCache eternal="false" timeToLiveSeconds="600"
+        maxElementsInMemory="1000" overflowToDisk="false" />
+
+</ehcache>

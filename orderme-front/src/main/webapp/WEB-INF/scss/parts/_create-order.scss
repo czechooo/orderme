@@ -1,0 +1,26 @@
+.create-order {
+  padding: 50px 0;
+}
+
+.create-order__row {
+  margin-top: 15px;
+}
+
+.create-order__order-textarea {
+  width: 100%;
+  border: 3px solid #cccccc;
+  padding: 5px;
+}
+
+.create-order__create-button {
+  margin-top: 15px;
+}
+
+.order-list__order {
+  margin: 20px 0;
+  padding: 10px 15px;
+  border: 1px solid $grey-light;
+  background-color: #fff;
+}
+
+

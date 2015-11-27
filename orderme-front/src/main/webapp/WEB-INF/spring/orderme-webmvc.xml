@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/mvc
+            http://www.springframework.org/schema/mvc/spring-mvc.xsd
+            http://www.springframework.org/schema/cache
+            http://www.springframework.org/schema/cache/spring-cache.xsd
+            http://www.springframework.org/schema/util
+            http://www.springframework.org/schema/util/spring-util.xsd
+            http://www.springframework.org/schema/task
+            http://www.springframework.org/schema/task/spring-task.xsd">
+
+
+    <!-- ================================================================== -->
+
+    <!--
+    <cache:annotation-driven />
+    -->
+	<context:annotation-config/>
+    <aop:aspectj-autoproxy/>
+
+    <context:component-scan base-package="com.ggralak"/>
+	
+    <!-- ================================================================== -->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+        </mvc:message-converters>
+        <mvc:argument-resolvers>
+            <bean class="org.springframework.data.web.PageableHandlerMethodArgumentResolver" />
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
+
+    <mvc:resources mapping="/static/**" location="/static/"/>
+
+    <mvc:interceptors>
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" p:paramName="lang"/>
+    </mvc:interceptors>
+
+    <!-- ================================================================== -->
+
+    <bean id="conversionService"
+          class="org.springframework.context.support.ConversionServiceFactoryBean"
+          p:converters-ref="customConverters"/>
+
+    <util:set id="customConverters">
+    </util:set>
+
+    <!-- ================================================================== -->
+
+    <bean id="messageSource"
+          class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
+          p:basenames="classpath:messages"
+          p:defaultEncoding="UTF-8"/>
+
+    <bean id="localeResolver"
+          class="org.springframework.web.servlet.i18n.CookieLocaleResolver"
+          p:defaultLocale="en"/>
+
+    <!--
+            Cannot use InternalResourceViewResolver with Tiles.
+            TilesExposingBeansViewResolver used to expose properites to the jsp
+    -->
+    <bean id="tilesViewResolver" class="com.ggralak.orderme.tiles.TilesExposingBeansViewResolver">
+        <property name="order" value="1"/>
+        <property name="viewClass" value="com.ggralak.orderme.tiles.TilesExposingBeansView"/>
+        <property name="exposedContextBeanNames">
+            <list><value>properties</value></list>
+        </property>
+    </bean>
+
+    <bean id="tilesConfigurer"
+          class="org.springframework.web.servlet.view.tiles3.TilesConfigurer"
+          p:definitions-ref="definitions"/>
+
+    <util:list id="definitions">
+        <value>/WEB-INF/views/**/views.xml</value>
+    </util:list>
+
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="java.lang.Exception">error/exception</prop>
+            </props>
+        </property>
+    </bean>
+
+    <context:property-placeholder location="classpath:application.properties"
+                                  ignore-unresolvable="true" />
+
+    <util:properties id="properties">
+        <prop key="application.timestamp">${application.timestamp}</prop>
+        <prop key="application.debug">${application.debug}</prop>
+        <prop key="application.version">${application.version}</prop>
+    </util:properties>
+
+</beans>

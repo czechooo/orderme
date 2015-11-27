@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/integration
+    http://www.springframework.org/schema/integration/spring-integration-4.0.xsd">
+
+    <int:channel id="incomingOrdersChannel" />
+    <int:channel id="orderItemsChannel" />
+    <int:channel id="ordersChannel" />
+
+    <int:gateway id="smsManagerGateway" service-interface="com.ggralak.integration.OrderGateway"
+                 default-request-channel="incomingOrdersChannel">
+        <int:method name="createOrder" />
+    </int:gateway>
+
+    <int:splitter id="orderSplitter" input-channel="incomingOrdersChannel" output-channel="orderItemsChannel">
+        <bean class="com.ggralak.integration.OrderSplitter" />
+    </int:splitter>
+
+    <int:aggregator input-channel="orderItemsChannel"
+                    output-channel="ordersChannel"
+                    method="add">
+        <bean class="com.ggralak.integration.OrderItemsAggregator" />
+    </int:aggregator>
+
+    <int:service-activator input-channel="ordersChannel" expression="@orderService.processOrder(payload)" />
+
+</beans>
